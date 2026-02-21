@@ -1,23 +1,20 @@
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, declarative_base
-from app.core.config import DATABASE_URL
+from dotenv import load_dotenv
+import os
 
-# Neon-friendly engine configuration
-engine = create_engine(
-    DATABASE_URL,
-    pool_pre_ping=True,     # avoids stale connections
-    pool_size=5,            # keep small for serverless
-    max_overflow=10
-)
+load_dotenv()
 
-SessionLocal = sessionmaker(
-    autocommit=False,
-    autoflush=False,
-    bind=engine
-)
+DATABASE_URL = os.getenv("DATABASE_URL")
+
+engine = create_engine(DATABASE_URL)
+
+SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 Base = declarative_base()
 
+
+# ✅ THIS FUNCTION MUST EXIST
 def get_db():
     db = SessionLocal()
     try:

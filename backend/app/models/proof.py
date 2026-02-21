@@ -4,6 +4,7 @@ from sqlalchemy.orm import relationship
 from app.db.session import Base
 
 
+
 class Proof(Base):
     __tablename__ = "proofs"
 

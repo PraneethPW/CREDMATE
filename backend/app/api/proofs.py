@@ -5,8 +5,9 @@ import hashlib
 
 from app.db.session import get_db
 from app.models.proof import Proof
-from app.api.deps import get_current_user
 from app.models.user import User
+from app.api.deps import get_current_user
+from app.services.reputation_service import update_reputation
 
 router = APIRouter()
 
@@ -24,7 +25,7 @@ def upload_proof(
     # Generate SHA256 hash
     file_hash = hashlib.sha256(content).hexdigest()
 
-    # Check for duplicate proof
+    # Check duplicate for same user
     existing_proof = db.query(Proof).filter(
         Proof.file_hash == file_hash,
         Proof.user_id == current_user.id
@@ -47,6 +48,9 @@ def upload_proof(
     db.add(new_proof)
     db.commit()
     db.refresh(new_proof)
+
+    # 🔥 Automatically update reputation
+    update_reputation(db, current_user.id)
 
     return {
         "message": "Proof uploaded successfully",
