@@ -4,12 +4,21 @@ import Navbar from "../components/Navbar";
 import {
   BarChart,
   Bar,
+  LineChart,
+  Line,
   XAxis,
   YAxis,
   Tooltip,
   ResponsiveContainer,
+  CartesianGrid,
 } from "recharts";
-import { Upload, ShieldCheck, FileText } from "lucide-react";
+import {
+  Upload,
+  ShieldCheck,
+  FileText,
+  TrendingUp,
+  Activity,
+} from "lucide-react";
 
 interface Proof {
   id: number;
@@ -57,92 +66,119 @@ const Dashboard = () => {
     }
   };
 
-  const chartData = [
+  const comparisonData = [
     { name: "Traditional", score: 70 },
     { name: "Baseline", score: 84 },
     { name: "CredMate", score: reputation || 92 },
+  ];
+
+  const trendData = [
+    { day: "Mon", score: 40 },
+    { day: "Tue", score: 55 },
+    { day: "Wed", score: 70 },
+    { day: "Thu", score: 80 },
+    { day: "Fri", score: reputation },
   ];
 
   return (
     <>
       <Navbar />
 
-      <div className="min-h-screen bg-gray-100 p-8">
+      <div className="min-h-screen bg-slate-950 text-white p-8">
         <div className="max-w-7xl mx-auto space-y-8">
 
           {/* Header */}
-          <h1 className="text-3xl font-bold">Dashboard</h1>
+          <div className="flex justify-between items-center">
+            <h1 className="text-3xl font-bold">CredMate Dashboard</h1>
+            <span className="text-slate-400 text-sm">
+              Trust & Proof Analytics
+            </span>
+          </div>
 
-          {/* Stat Cards */}
-          <div className="grid md:grid-cols-3 gap-6">
+          {/* STAT CARDS */}
+          <div className="grid md:grid-cols-4 gap-6">
 
-            <div className="bg-white shadow-lg rounded-xl p-6 flex justify-between items-center">
+            <div className="bg-slate-900 border border-slate-800 rounded-xl p-6 flex justify-between items-center">
               <div>
-                <p className="text-gray-500">Reputation Score</p>
-                <p className="text-4xl font-bold">{reputation}</p>
+                <p className="text-slate-400 text-sm">Reputation</p>
+                <p className="text-3xl font-bold">{reputation}</p>
               </div>
-              <ShieldCheck size={40} className="text-green-500" />
+              <ShieldCheck className="text-green-400" size={36} />
             </div>
 
-            <div className="bg-white shadow-lg rounded-xl p-6 flex justify-between items-center">
+            <div className="bg-slate-900 border border-slate-800 rounded-xl p-6 flex justify-between items-center">
               <div>
-                <p className="text-gray-500">Total Proofs</p>
-                <p className="text-4xl font-bold">{proofs.length}</p>
+                <p className="text-slate-400 text-sm">Total Proofs</p>
+                <p className="text-3xl font-bold">{proofs.length}</p>
               </div>
-              <FileText size={40} className="text-blue-500" />
+              <FileText className="text-blue-400" size={36} />
             </div>
 
-            <div className="bg-white shadow-lg rounded-xl p-6 flex justify-between items-center">
+            <div className="bg-slate-900 border border-slate-800 rounded-xl p-6 flex justify-between items-center">
               <div>
-                <p className="text-gray-500">Trust Level</p>
-                <p className="text-4xl font-bold">
+                <p className="text-slate-400 text-sm">Trust Level</p>
+                <p className="text-3xl font-bold">
                   {reputation > 80 ? "High" : "Medium"}
                 </p>
               </div>
-              ⭐
+              <TrendingUp className="text-indigo-400" size={36} />
+            </div>
+
+            <div className="bg-slate-900 border border-slate-800 rounded-xl p-6 flex justify-between items-center">
+              <div>
+                <p className="text-slate-400 text-sm">Activity</p>
+                <p className="text-3xl font-bold">{proofs.length * 3}</p>
+              </div>
+              <Activity className="text-yellow-400" size={36} />
             </div>
 
           </div>
 
-          {/* Reputation Progress */}
-          <div className="bg-white shadow-lg rounded-xl p-6">
-            <h2 className="font-semibold mb-4">Reputation Progress</h2>
+          {/* GRAPH GRID */}
+          <div className="grid md:grid-cols-2 gap-6">
 
-            <div className="w-full bg-gray-200 rounded-full h-4">
-              <div
-                className="bg-green-500 h-4 rounded-full"
-                style={{ width: `${reputation}%` }}
-              ></div>
-            </div>
+            {/* Reputation Trend */}
+            <div className="bg-slate-900 border border-slate-800 rounded-xl p-6">
+              <h2 className="mb-4 font-semibold">Reputation Trend</h2>
 
-            <p className="mt-2 text-sm text-gray-500">
-              Your credibility score based on verified proofs.
-            </p>
-          </div>
-
-          {/* Graph Section */}
-          <div className="bg-white shadow-lg rounded-xl p-6">
-            <h2 className="font-semibold mb-4">Model Comparison</h2>
-
-            <div style={{ width: "100%", height: 300 }}>
-              <ResponsiveContainer>
-                <BarChart data={chartData}>
-                  <XAxis dataKey="name" />
-                  <YAxis />
+              <ResponsiveContainer width="100%" height={250}>
+                <LineChart data={trendData}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" />
+                  <XAxis dataKey="day" stroke="#94a3b8" />
+                  <YAxis stroke="#94a3b8" />
                   <Tooltip />
-                  <Bar dataKey="score" fill="#6366f1" />
+                  <Line
+                    type="monotone"
+                    dataKey="score"
+                    stroke="#6366f1"
+                    strokeWidth={3}
+                  />
+                </LineChart>
+              </ResponsiveContainer>
+            </div>
+
+            {/* Model Comparison */}
+            <div className="bg-slate-900 border border-slate-800 rounded-xl p-6">
+              <h2 className="mb-4 font-semibold">Model Comparison</h2>
+
+              <ResponsiveContainer width="100%" height={250}>
+                <BarChart data={comparisonData}>
+                  <XAxis dataKey="name" stroke="#94a3b8" />
+                  <YAxis stroke="#94a3b8" />
+                  <Tooltip />
+                  <Bar dataKey="score" fill="#6366f1" radius={[6,6,0,0]} />
                 </BarChart>
               </ResponsiveContainer>
             </div>
+
           </div>
 
-          {/* Upload Section */}
-          <div className="bg-white shadow-lg rounded-xl p-6">
-            <h2 className="font-semibold mb-4">Upload Proof</h2>
+          {/* UPLOAD */}
+          <div className="bg-slate-900 border border-slate-800 rounded-xl p-8 text-center">
 
-            <label className="border-2 border-dashed border-gray-300 rounded-xl p-10 text-center cursor-pointer hover:border-black transition flex flex-col items-center gap-3">
+            <Upload size={40} className="mx-auto mb-3 text-indigo-400" />
 
-              <Upload size={32} />
+            <label className="cursor-pointer">
 
               <input
                 type="file"
@@ -150,28 +186,34 @@ const Dashboard = () => {
                 onChange={uploadProof}
               />
 
-              {loading ? "Uploading..." : "Click to upload file"}
+              <p className="text-slate-300">
+                {loading ? "Uploading..." : "Upload verification proof"}
+              </p>
+
             </label>
+
           </div>
 
-          {/* Proof List */}
-          <div className="bg-white shadow-lg rounded-xl p-6">
-            <h2 className="font-semibold mb-4">My Proofs</h2>
+          {/* PROOFS */}
+          <div className="bg-slate-900 border border-slate-800 rounded-xl p-6">
+            <h2 className="font-semibold mb-4">Recent Proofs</h2>
 
             {proofs.length === 0 ? (
-              <p className="text-gray-500">No proofs uploaded yet.</p>
+              <p className="text-slate-400">No proofs uploaded yet.</p>
             ) : (
-              <div className="grid md:grid-cols-2 gap-4">
+              <div className="grid md:grid-cols-3 gap-4">
                 {proofs.map((proof) => (
                   <div
                     key={proof.id}
-                    className="border p-4 rounded-lg hover:shadow-md transition"
+                    className="bg-slate-800 border border-slate-700 rounded-lg p-4 hover:border-indigo-500 transition"
                   >
                     <p className="font-semibold">{proof.file_name}</p>
-                    <p className="text-sm text-gray-500">
+
+                    <p className="text-xs text-slate-400 mt-1">
                       {new Date(proof.created_at).toLocaleString()}
                     </p>
-                    <p className="text-xs mt-2 text-gray-400">
+
+                    <p className="text-xs text-slate-500 mt-2">
                       ID: {proof.id}
                     </p>
                   </div>
