@@ -26,10 +26,17 @@ const Login = () => {
   };
 
   return (
-    <div className="flex items-center justify-center h-screen bg-slate-950">
+    <div className="flex flex-col items-center justify-center min-h-screen bg-slate-950 px-4 py-8">
+      <button
+        type="button"
+        onClick={() => navigate("/")}
+        className="mb-6 text-sm text-slate-500 transition hover:text-indigo-400"
+      >
+        ← Back to home
+      </button>
 
       {/* Login Card */}
-      <div className="bg-slate-900 border border-slate-800 p-10 rounded-2xl shadow-2xl w-96">
+      <div className="bg-slate-900 border border-slate-800 p-10 rounded-2xl shadow-2xl w-full max-w-md">
 
         <h2 className="text-3xl font-bold text-white mb-6 text-center">
           CredMate Login
