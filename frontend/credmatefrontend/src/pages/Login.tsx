@@ -1,6 +1,6 @@
 import { useState, useContext } from "react";
-import API from "../api/axios";
 import { AuthContext } from "../context/AuthContext";
+import { getApiErrorMessage, loginWithPassword } from "../api/auth";
 import { useNavigate } from "react-router-dom";
 import { Mail, Lock } from "lucide-react";
 
@@ -11,17 +11,18 @@ const Login = () => {
   const navigate = useNavigate();
 
   const handleLogin = async () => {
+    if (!email.trim() || !password) {
+      alert("Please enter email and password.");
+      return;
+    }
+
     try {
-      const formData = new URLSearchParams();
-      formData.append("username", email);
-      formData.append("password", password);
-
-      const res = await API.post("/auth/login", formData);
-
+      const res = await loginWithPassword(email, password);
       auth?.login(res.data.access_token);
       navigate("/dashboard");
-    } catch {
-      alert("Invalid credentials");
+    } catch (err) {
+      alert(getApiErrorMessage(err));
+      console.error(err);
     }
   };
 

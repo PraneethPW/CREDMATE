@@ -1,6 +1,6 @@
 import { useState, useContext } from "react";
-import API from "../api/axios";
 import { AuthContext } from "../context/AuthContext";
+import { getApiErrorMessage, loginWithPassword, registerUser } from "../api/auth";
 import { useNavigate } from "react-router-dom";
 import { User, Mail, Lock } from "lucide-react";
 
@@ -13,25 +13,28 @@ const Signup = () => {
   const navigate = useNavigate();
 
   const handleSignup = async () => {
+    if (!username.trim() || !email.trim() || !password) {
+      alert("Please fill in username, email, and password.");
+      return;
+    }
+
     try {
-      await API.post("/auth/register", {
-        username,
-        email,
-        password,
-      });
+      await registerUser(username, email, password);
+    } catch (err) {
+      alert(getApiErrorMessage(err));
+      console.error(err);
+      return;
+    }
 
-      const formData = new URLSearchParams();
-      formData.append("username", email);
-      formData.append("password", password);
-
-      const res = await API.post("/auth/login", formData);
-
+    try {
+      const res = await loginWithPassword(email, password);
       auth?.login(res.data.access_token);
       navigate("/dashboard");
-
-    } catch (error) {
-      alert("Signup failed");
-      console.error(error);
+    } catch (err) {
+      alert(
+        `Account was created, but login failed: ${getApiErrorMessage(err)}. Try logging in manually.`,
+      );
+      console.error(err);
     }
   };
 
